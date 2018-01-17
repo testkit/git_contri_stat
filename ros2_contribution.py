@@ -44,6 +44,8 @@ if __name__=='__main__':
                 (status, output) = commands.getstatusoutput(cmd);
                 print '%s %s %s %s' % (people, "contributed", output, "commits");
             print "============\n";
+         
+        os.chdir(r'/home/cathy/Working/ROS2/');
 
     fp.close();
 
