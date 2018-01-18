@@ -8,6 +8,7 @@ ROS2_LOCAL_REPO_FILE = "ros2.repos";
 OTC_CONTRIBUTORS = ["jwang11", "gaoethan"];
 ROS2_LOCAL_PATH = "~/Working/ROS2";
 TIME_DURATION = "--since=30.days.ago --until=now";
+#dict_person = {"jwang11":0, "gaoethan":0};
 
 if __name__=='__main__':
     os.chdir(r'/home/cathy/Working/ROS2/');
@@ -18,10 +19,11 @@ if __name__=='__main__':
 
     fp = open(ROS2_LOCAL_REPO_FILE,'r');
     arr=[]
+    dict_person = {};
+    dict_project = {};
     for lines in fp.readlines():
         if "https://" in lines:
             git_url = lines.split(':',1)[1];
-            arr.append(git_url);
             
             git_name = os.path.split(git_url)[1];
             
@@ -43,9 +45,28 @@ if __name__=='__main__':
                 cmd = r'%s %s %s %s' % ("git log", TIME_DURATION, "|grep -c", people);
                 (status, output) = commands.getstatusoutput(cmd);
                 print '%s %s %s %s' % (people, "contributed", output, "commits");
+
+                if (int(output) and (git_root not in arr)):
+                    arr.append(git_root);
+
+                if int(output):
+                    if (git_root not in dict_project):
+                        dict_project[git_root] = int(output);
+                    else:
+                        dict_project[git_root] = dict_project[git_root] + int(output);
+                    if (people not in dict_person):
+                        dict_person[people] = int(output);
+                    else:
+                        dict_person[people] = dict_person[people] + int(output);
+
             print "============\n";
-         
+
+
         os.chdir(r'/home/cathy/Working/ROS2/');
+
+    print "Contributed to projects:",arr;
+    print "Contributors:",dict_person;
+    print "Project contribution:",dict_project;
 
     fp.close();
 
